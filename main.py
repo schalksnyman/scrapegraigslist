@@ -21,7 +21,8 @@ if page.status_code == requests.codes.ok:
   data = {
     'Date': [],
     'Price': [],
-    'Title': []
+    'Title': [],
+    'Link': []
   }
 
   # Scrape all cars in the results
@@ -41,8 +42,14 @@ if page.status_code == requests.codes.ok:
       data['Title'].append(title)
     else:
       data['Title'].append('none')
+    link = car.find('a', class_='result-title hdrlnk')['href']
+    if link:
+      data['Link'].append(link)
+    else:
+      data['Link'].append('none')
 
-  table = pd.DataFrame(data, columns=['Date', 'Price', 'Title'])
+  table = pd.DataFrame(data, columns=['Date', 'Price', 'Title', 'Link'])
+  # Change index from 0, to start from 1 for Pandas.
   table.index = table.index + 1
   print(table)
   table.to_csv('joburg_cars_on_graigslist.csv', sep=',', index=False, encoding='utf-8')
